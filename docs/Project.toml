@@ -1,0 +1,3 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+YangShallowWater = "9ddec375-cb9f-4c3a-8fb7-c38f34d0a4c3"
