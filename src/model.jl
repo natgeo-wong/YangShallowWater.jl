@@ -40,7 +40,7 @@ function calcN!(N, sol, t, clock, vars, params, grid)
 end
 
 function Equation(params, grid)
-s
+
     T = eltype(grid)
     dev = grid.device
 
