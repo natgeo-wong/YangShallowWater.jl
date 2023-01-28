@@ -19,18 +19,18 @@ function GenerateGrid(
 
     if isone(ny) || iszero(Ly)
         return OneDGrid(;
-            nx=nx, Lx=Lx, x0=Lx/(2*nx)
+            nx=nx, Lx=Lx, x0=Lx/(2nx)
         )
     else
         return TwoDGrid(;
-            nx=nx, Lx=Lx, x0=Lx/(2*nx),
-            ny=ny, Ly=Ly, y0=Ly/(2*ny)
+            nx, Lx, x0=Lx/(2nx),
+            ny, Ly, y0=Ly/(2ny)
         )
     end
 
 end
 
-function DefineParams(
+DefineParams(
 	FT = Float64;
 	c  :: FT = 20.,     # units in m s**-1
     τd :: FT = 0.6,     # units in hours
@@ -40,8 +40,4 @@ function DefineParams(
     ϕc :: FT = c^2,     # units in m**2 s**-2
     rc :: FT = 10.,     # units in km
     nc :: FT = 4.e-10,  # units in m**-2 s**-1
-)
-
-    return YSWParams{FT}(c,τd*3600,τc*86400,τl*86400,ϕ0,ϕc,rc*1000,nc)
-
-end
+) = YSWParams{FT}(c, τd*3600, τc*86400, τl*86400, ϕ0, ϕc, rc*1000, nc)
