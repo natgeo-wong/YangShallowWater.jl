@@ -1,5 +1,7 @@
 module YangShallowWater
 
+export GenerateGrid
+
 ## Modules Used
 using Dates
 using FourierFlows
