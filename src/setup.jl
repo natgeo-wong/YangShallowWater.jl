@@ -1,12 +1,14 @@
 struct YSWParams{FT<:Real} <: AbstractParams
-    c  :: FT # Gravity Wave speed
-    τd :: FT # Linear Damping Timescale
-    τc :: FT # Convective Damping Timescale
-    τl :: FT # WTG relaxation timescale
-    ϕ0 :: FT # Large-scale geopotential
-    ϕc :: FT # Convection-triggering geopotential
-    rc :: FT # Convection radius
-    nc :: FT # Number DENSITY of convective events
+    c  :: FT  # Gravity Wave speed
+    τd :: FT  # Linear Damping Timescale
+    τc :: FT  # Convective Damping Timescale
+    τl :: FT  # WTG relaxation timescale
+    ϕ0 :: FT  # Large-scale geopotential
+    ϕc :: FT  # Convection-triggering geopotential
+    rc :: FT  # Convection radius
+    nc :: FT  # Number DENSITY of convective events
+     ν :: FT  # Hyperviscosity coefficient
+    nν :: Int # Order of the hyperviscous operator
 end
 
 function GenerateGrid(
@@ -57,4 +59,6 @@ DefineParams(
     ϕc = c^2,     # units in m² s²
     rc = 10,      # units in km
     nc = 4e-10,   # units in m⁻² s⁻¹
-) = YSWParams{FT}(c, τd * 3600, τc * 86400, τl * 86400, ϕ0, ϕc, rc * 1000, nc)
+     ν = 0,
+    nν = 1
+) = YSWParams{FT}(c, τd * 3600, τc * 86400, τl * 86400, ϕ0, ϕc, rc * 1000, nc, ν, nν)
