@@ -42,15 +42,12 @@ function Equation(dev, params, grid)
 
     T = eltype(grid)
     L = zeros(dev, T, (grid.nkr, grid.l, 3))
-    D = @. - params.ν * grid.Krsq^params.nν
 
-    # for u, v, φ
-    for j in 1:3
-        L[:, :, j] .= D
-    end
+    D = @. - params.ν * grid.Krsq^params.nν  # - ν (k²+l²)ⁿ
 
-    @. L[:, :, 1] = - 1 / τd    # the -1/τd drag on u
-    @. L[:, :, 2] = - 1 / τd    # the -1/τd drag on v
+    @views @. L[:, :, 1] = D - 1 / τd    # for u
+    @views @. L[:, :, 2] = D - 1 / τd    # for v
+    @views @. L[:, :, 3] = D             # for ϕ
 
     return FourierFlows.Equation(L, calcN!, grid)
 
