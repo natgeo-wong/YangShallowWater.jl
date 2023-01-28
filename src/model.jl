@@ -1,4 +1,3 @@
-
 struct Vars{Aphys, Atrans} <: AbstractVars
       u :: Aphys
       v :: Aphys
@@ -10,13 +9,15 @@ struct Vars{Aphys, Atrans} <: AbstractVars
     Fch :: Atrans
 end
 
-function Vars(::Dev, grid) where Dev
+function Vars(grid)
 
     T = eltype(grid)
+    Dev = typeof(grid.device)
+
     @devzeros Dev T (grid.nx, grid.ny) u v ϕ Fc
     @devzeros Dev Complex{T} (grid.nkr, grid.nl) uh vh ϕh Fch
 
-    return Vars(u, v, ϕ, Fc, uh, vh, ηh, Fch)
+    return Vars(u, v, ϕ, Fc, uh, vh, ϕh, Fch)
 
 end
 
@@ -29,7 +30,7 @@ function calcN!(N, sol, t, clock, vars, params, grid)
 
     @views @. N[:, :, 1] = - im * grid.kr * vars.ϕh                                    # - ∂ϕ/∂x
     @views @. N[:, :, 2] = - im * grid.l  * vars.ϕh                                    # - ∂ϕ/∂y
-    @views @. N[:, :, 3] = - im * (grid.kr * vars.uh + grid.l * vars.vh) + vars.Fch    # - ∂u/∂x - ∂v/∂y - Fc
+    @views @. N[:, :, 3] = - im * (grid.kr * vars.uh + grid.l * vars.vh) - vars.Fch    # - ∂u/∂x - ∂v/∂y - Fc
     @views @. N[:, :, 4] = 0                                                           # 0 for now
 
     dealias!(N, grid)
@@ -38,16 +39,18 @@ function calcN!(N, sol, t, clock, vars, params, grid)
 
 end
 
-function Equation(dev, params, grid)
-
+function Equation(params, grid)
+s
     T = eltype(grid)
-    L = zeros(dev, T, (grid.nkr, grid.l, 3))
+    dev = grid.device
+
+    L = zeros(dev, T, (grid.nkr, grid.nl, 3))
 
     D = @. - params.ν * grid.Krsq^params.nν  # - ν (k²+l²)ⁿ
 
-    @views @. L[:, :, 1] = D - 1 / τd    # for u
-    @views @. L[:, :, 2] = D - 1 / τd    # for v
-    @views @. L[:, :, 3] = D             # for ϕ
+    @views @. L[:, :, 1] = D - 1 / params.τd    # for u
+    @views @. L[:, :, 2] = D - 1 / params.τd    # for v
+    @views @. L[:, :, 3] = D                    # for ϕ
 
     return FourierFlows.Equation(L, calcN!, grid)
 
