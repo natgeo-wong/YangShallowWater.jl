@@ -32,14 +32,29 @@ function GenerateGrid(
 
 end
 
+"""
+    DefineParams(
+        FT = Float64;
+        c  = 20,      # units in m s⁻¹
+        τd = 0.6,     # units in hours
+        τc = 1,       # units in days
+        τl = 1,       # units in days
+        ϕ0 = 0,       # units in m² s²
+        ϕc = c^2,     # units in m² s²
+        rc = 10,      # units in km
+        nc = 4e-10,   # units in m⁻² s⁻¹
+    )
+
+Return the parameters in SI units.
+"""
 DefineParams(
-	FT = Float64;
-	c  = 20.,     # units in m s**-1
+    FT = Float64;
+    c  = 20,      # units in m s⁻¹
     τd = 0.6,     # units in hours
-    τc = 1.,      # units in days
-    τl = 1.,      # units in days
-    ϕ0 = 0,       # units in m**2 s**-2
-    ϕc = c^2,     # units in m**2 s**-2
-    rc = 10.,     # units in km
-    nc = 4.e-10,  # units in m**-2 s**-1
-) = YSWParams{FT}(c, τd*3600, τc*86400, τl*86400, ϕ0, ϕc, rc*1000, nc)
+    τc = 1,       # units in days
+    τl = 1,       # units in days
+    ϕ0 = 0,       # units in m² s²
+    ϕc = c^2,     # units in m² s²
+    rc = 10,      # units in km
+    nc = 4e-10,   # units in m⁻² s⁻¹
+) = YSWParams{FT}(c, τd * 3600, τc * 86400, τl * 86400, ϕ0, ϕc, rc * 1000, nc)
