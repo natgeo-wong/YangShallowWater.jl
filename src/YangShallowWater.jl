@@ -12,6 +12,7 @@ import Base: eltype, show
 
 ## Including other files in the module
 
-# include()
+include("setup.jl")
+include("model.jl")
 
 end
