@@ -22,15 +22,15 @@ end
 
 function calcN!(N, sol, t, clock, vars, params, grid)
 
-    @. vars.uh  = sol[:, :, 1]
-    @. vars.vh  = sol[:, :, 2]
-    @. vars.ϕh  = sol[:, :, 3]
-    @. vars.Fch = sol[:, :, 4]
+    @. vars.uh  = view(sol, :, :, 1)
+    @. vars.vh  = view(sol, :, :, 2)
+    @. vars.ϕh  = view(sol, :, :, 3)
+    @. vars.Fch = view(sol, :, :, 4)
 
-    @. N[:, :, 1] = - im * grid.kr * vars.ϕh - vars.uh / τd                     # - ∂ϕ/∂x - u/τd
-    @. N[:, :, 2] = - im * grid.l  * vars.ϕh - vars.uh / τd                     # - ∂ϕ/∂y - v/τd
-    @. N[:, :, 3] = - im * (grid.kr * vars.uh + grid.l * vars.vh) + vars.Fch    # - ∂u/∂x - ∂v/∂y - Fc
-    @. N[:, :, 4] = 0                                                           # 0 for now
+    @views @. N[:, :, 1] = - im * grid.kr * vars.ϕh - vars.uh / τd                     # - ∂ϕ/∂x - u/τd
+    @views @. N[:, :, 2] = - im * grid.l  * vars.ϕh - vars.uh / τd                     # - ∂ϕ/∂y - v/τd
+    @views @. N[:, :, 3] = - im * (grid.kr * vars.uh + grid.l * vars.vh) + vars.Fch    # - ∂u/∂x - ∂v/∂y - Fc
+    @views @. N[:, :, 4] = 0                                                           # 0 for now
 
     dealias!(N, grid)
 
@@ -72,7 +72,7 @@ function updatevars!(prob)
 
 end
 
-function set_uvη!(prob, u0, v0, ϕ0, Fc0)
+function set_uvϕFc!(prob, u0, v0, ϕ0, Fc0)
 
     vars, grid, sol = prob.vars, prob.grid, prob.sol
 
@@ -83,10 +83,10 @@ function set_uvη!(prob, u0, v0, ϕ0, Fc0)
     mul!(vars.ϕh, grid.rfftplan, A(ϕ0))
     mul!(vars.Fch, grid.rfftplan, A(Fc0))
 
-    @. sol[:, :, 1] = vars.uh
-    @. sol[:, :, 2] = vars.vh
-    @. sol[:, :, 3] = vars.ϕh
-    @. sol[:, :, 4] = vars.Fh
+    @views @. sol[:, :, 1] = vars.uh
+    @views @. sol[:, :, 2] = vars.vh
+    @views @. sol[:, :, 3] = vars.ϕh
+    @views @. sol[:, :, 4] = vars.Fh
 
     updatevars!(prob)
 
