@@ -27,8 +27,8 @@ function calcN!(N, sol, t, clock, vars, params, grid)
     @. vars.ϕh  = view(sol, :, :, 3)
     @. vars.Fch = view(sol, :, :, 4)
 
-    @views @. N[:, :, 1] = - im * grid.kr * vars.ϕh - vars.uh / τd                     # - ∂ϕ/∂x - u/τd
-    @views @. N[:, :, 2] = - im * grid.l  * vars.ϕh - vars.uh / τd                     # - ∂ϕ/∂y - v/τd
+    @views @. N[:, :, 1] = - im * grid.kr * vars.ϕh                                    # - ∂ϕ/∂x
+    @views @. N[:, :, 2] = - im * grid.l  * vars.ϕh                                    # - ∂ϕ/∂y
     @views @. N[:, :, 3] = - im * (grid.kr * vars.uh + grid.l * vars.vh) + vars.Fch    # - ∂u/∂x - ∂v/∂y - Fc
     @views @. N[:, :, 4] = 0                                                           # 0 for now
 
@@ -48,6 +48,9 @@ function Equation(dev, params, grid)
     for j in 1:3
         L[:, :, j] .= D
     end
+
+    @. L[:, :, 1] = - 1 / τd    # the -1/τd drag on u
+    @. L[:, :, 2] = - 1 / τd    # the -1/τd drag on v
 
     return FourierFlows.Equation(L, calcN!, grid)
 
