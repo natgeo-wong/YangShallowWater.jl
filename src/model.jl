@@ -23,10 +23,10 @@ end
 
 function calcN!(N, sol, t, clock, vars, params, grid)
 
-    @. vars.uh  = view(sol, :, :, 1)
-    @. vars.vh  = view(sol, :, :, 2)
-    @. vars.ϕh  = view(sol, :, :, 3)
-    @. vars.Fch = view(sol, :, :, 4)
+    vars.uh  .= view(sol, :, :, 1)
+    vars.vh  .= view(sol, :, :, 2)
+    vars.ϕh  .= view(sol, :, :, 3)
+    vars.Fch .= view(sol, :, :, 4)
 
     @views @. N[:, :, 1] = - im * grid.kr * vars.ϕh                                    # - ∂ϕ/∂x
     @views @. N[:, :, 2] = - im * grid.l  * vars.ϕh                                    # - ∂ϕ/∂y
@@ -44,7 +44,7 @@ function Equation(params, grid)
     T = eltype(grid)
     dev = grid.device
 
-    L = zeros(dev, T, (grid.nkr, grid.nl, 3))
+    L = zeros(dev, T, (grid.nkr, grid.nl, 4))
 
     D = @. - params.ν * grid.Krsq^params.nν  # - ν (k²+l²)ⁿ
 
