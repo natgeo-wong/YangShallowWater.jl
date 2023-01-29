@@ -40,8 +40,11 @@ function calcN!(N, sol, t, clock, vars, params, grid)
 end
 
 function addforcing!(N, sol, t, clock, vars, params, grid)
+    
+    # call calcF! to compute Fch and store it in vars.Fch
     params.calcF!(vars.Fch, sol, t, clock, vars, params, grid)
     
+    # add Fch on the nonlinear term for ϕ
     @views @. N[:, :, 3] += vars.Fch
   
     return nothing
@@ -58,7 +61,6 @@ function Equation(params, grid)
 
     @views @. L[:, :, 1] = D - 1 / params.τd    # for u
     @views @. L[:, :, 2] = D - 1 / params.τd    # for v
-    @views @. L[:, :, 3] = D                    # for ϕ
 
     return FourierFlows.Equation(L, calcN!, grid)
 
