@@ -44,7 +44,7 @@ function Equation(params, grid)
     T = eltype(grid)
     dev = grid.device
 
-    L = zeros(dev, T, (grid.nkr, grid.nl, 3))
+    L = zeros(dev, T, (grid.nkr, grid.nl, 4))
 
     D = @. - params.ν * grid.Krsq^params.nν  # - ν (k²+l²)ⁿ
 
