@@ -60,10 +60,10 @@ function updatevars!(prob)
     
     vars, grid, sol = prob.vars, prob.grid, prob.sol
 
-    @. vars.uh = sol[:, :, 1]
-    @. vars.vh = sol[:, :, 2]
-    @. vars.ϕh = sol[:, :, 3]
-    @. vars.Fch = sol[:, :, 4]
+    vars.uh  .= sol[:, :, 1]
+    vars.vh  .= sol[:, :, 2]
+    vars.ϕh  .= sol[:, :, 3]
+    vars.Fch .= sol[:, :, 4]
 
     # use deepcopy() below because irfft destroys its input
     ldiv!(vars.u, grid.rfftplan, deepcopy(sol[:, :, 1]))
@@ -86,10 +86,10 @@ function set_uvϕFc!(prob, u0, v0, ϕ0, Fc0)
     mul!(vars.ϕh, grid.rfftplan, A(ϕ0))
     mul!(vars.Fch, grid.rfftplan, A(Fc0))
 
-    @views @. sol[:, :, 1] = vars.uh
-    @views @. sol[:, :, 2] = vars.vh
-    @views @. sol[:, :, 3] = vars.ϕh
-    @views @. sol[:, :, 4] = vars.Fh
+    @views sol[:, :, 1] .= vars.uh
+    @views sol[:, :, 2] .= vars.vh
+    @views sol[:, :, 3] .= vars.ϕh
+    @views sol[:, :, 4] .= vars.Fch
 
     updatevars!(prob)
 

@@ -15,9 +15,9 @@ function run(
     set_uvϕFc!(prob, u0, v0, ϕ0, Fc0)
 
     for it = 0 : nsteps
-        updatevars!(prob)
         stepforward!(prob)
     end
+    updatevars!(prob)
 
     return prob
 
