@@ -31,7 +31,7 @@ function calcN!(N, sol, t, clock, vars, params, grid)
 
     @views @. N[:, :, 1] = - im * grid.kr * vars.ϕh                                    # - ∂ϕ/∂x
     @views @. N[:, :, 2] = - im * grid.l  * vars.ϕh                                    # - ∂ϕ/∂y
-    @views @. N[:, :, 3] = - im * (grid.kr * vars.uh + grid.l * vars.vh) * params.c^2  # - c^2 * (∂u/∂x - ∂v/∂y)
+    @views @. N[:, :, 3] = - im * (grid.kr * vars.uh + grid.l * vars.vh) * params.c^2  # - c^2 * (∂u/∂x + ∂v/∂y)
 
     addforcing!(N, sol, t, clock, vars, params, grid)
 
