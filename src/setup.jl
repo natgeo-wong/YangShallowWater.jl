@@ -10,6 +10,8 @@ struct YSWParams{FT<:Real} <: AbstractParams
     Fl :: FT  # Number DENSITY of convective events
      ν :: FT  # Hyperviscosity coefficient
     nν :: Int # Order of the hyperviscous operator
+    "function that calculates the Fourier transform of the forcing, ``F_c``"
+    calcF! :: Function
 end
 
 function GenerateGrid(
@@ -35,6 +37,12 @@ function GenerateGrid(
 
 end
 
+function calcF!(Fch, sol, t, clock, vars, params, grid)
+    Fch .= 0
+
+    return nothing
+end
+
 """
     DefineParams(
         FT = Float64;
@@ -46,6 +54,7 @@ end
         ϕc = c^2,     # units in m² s²
         rc = 10,      # units in km
         nc = 4e-10,   # units in m⁻² s⁻¹
+        calcF = calcF!
     )
 
 Return the parameters in SI units.
@@ -62,13 +71,14 @@ function DefineParams(
     Sc = 4.e-10,  # units in m**-2 s**-1
     Fl = 44,
      ν = 0,
-    nν = 1
+    nν = 1,
+    calcF = calcF!
 )
 
     if !iszero(τl); fl = 0; else; fl = Fl end
 
     return YSWParams{FT}(
-        c, τd * 3600, τc * 86400, τl * 86400, ϕ0, ϕc, rc * 1000, Sc, Fl, ν, nν
+        c, τd * 3600, τc * 86400, τl * 86400, ϕ0, ϕc, rc * 1000, Sc, Fl, ν, nν, calcF!
     )
 
 end
