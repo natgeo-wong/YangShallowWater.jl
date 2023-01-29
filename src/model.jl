@@ -76,6 +76,7 @@ function updatevars!(prob)
     ldiv!(vars.u, grid.rfftplan, deepcopy(sol[:, :, 1]))
     ldiv!(vars.v, grid.rfftplan, deepcopy(sol[:, :, 2]))
     ldiv!(vars.ϕ, grid.rfftplan, deepcopy(sol[:, :, 3]))
+    ldiv!(vars.Fc, grid.rfftplan, deepcopy(vars.Fch))
 
     return nothing
 
