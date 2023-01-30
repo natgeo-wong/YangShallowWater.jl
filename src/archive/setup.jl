@@ -53,7 +53,10 @@ end
         ϕ0 = 0,       # units in m² s²
         ϕc = c^2,     # units in m² s²
         rc = 10,      # units in km
-        nc = 4e-10,   # units in m⁻² s⁻¹
+        Sc = 4.e-10,  # units in m**-2 s**-1
+        Fl = 44,
+         ν = 0,
+        nν = 1,
         calcF = calcF!
     )
 

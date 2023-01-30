@@ -1,21 +1,23 @@
-struct Convection1D{FT<:Real} <: AbstractParams
+struct Convection1D{FT<:Real} <: Forcing1D
     τc :: FT # Convective Damping Timescale
     ϕ0 :: FT # Large-scale geopotential
     ϕc :: FT # Convection-triggering geopotential
     rc :: FT # Convection radius
     Sc :: FT # Number DENSITY of convective events
-    ConvectionFlux :: Convection1DFlux{FT}
-    ConvectionGrid :: Convection1DGrid{FT}
+    ConvectionFlux  :: Convection1DFlux{FT}
+    ConvectionGrid  :: Convection1DGrid{FT}
+    calcConvection! :: Function
 end
 
-struct Convection2D{FT<:Real} <: AbstractParams
+struct Convection2D{FT<:Real} <: Forcing2D
     τc :: FT # Convective Damping Timescale
     ϕ0 :: FT # Large-scale geopotential
     ϕc :: FT # Convection-triggering geopotential
     rc :: FT # Convection radius
     Sc :: FT # Number DENSITY of convective events
-    ConvectionFlux :: Convection2DFlux{FT}
-    ConvectionGrid :: Convection2DGrid{FT}
+    ConvectionFlux  :: Convection2DFlux{FT}
+    ConvectionGrid  :: Convection2DGrid{FT}
+    calcConvection! :: Function
 end
 
 struct Convection1DFlux{FT<:Real} <: AbstractGrid
@@ -43,7 +45,8 @@ end
 function GenerateConvection(
 	P :: YSWParams{FT},
     G :: OneDGrid,
-)
+    F :: Function,
+) where FT <: Real
 
     rc = P.rc
     r2 = P.rc^2
@@ -62,7 +65,8 @@ function GenerateConvection(
             zeros(Int, G.nx),
             zeros(FT, G.nx),
             zeros(FT, G.nx)
-        )
+        ),
+        F
     )
 
 end
@@ -70,6 +74,7 @@ end
 function GenerateConvection(
 	P :: YSWParams{FT},
     G :: TwoDGrid,
+    F :: Function,
 ) where FT <: Real
 
     rc = P.rc
@@ -91,7 +96,8 @@ function GenerateConvection(
             zeros(Int, G.nx, G.ny),
             zeros(FT, G.nx, G.ny),
             zeros(FT, G.nx, G.ny)
-        )
+        ),
+        F
     )
 
 end
