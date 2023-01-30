@@ -54,7 +54,7 @@ function DefineParams(
            τl*86400,ϕ0,wtg,Fl,
            convectionfunction!,ϕfunction!
        )
-   else; P = SimpleParams{eltype(G)}(c,f,τd,ν,nν)
+   else; P = SimpleParams{eltype(G)}(c,f,τd*3600,ν,nν)
    end
 
 end
