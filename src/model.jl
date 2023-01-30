@@ -31,8 +31,8 @@ function CreateModel(
     T = eltype(G)
 
     if spectral
-          return Model1DSpectral{T}(G,P,SpectralVars())
-    else; return Model1DFiniteDiff{T}(G,P,FiniteDiffVars())
+          return Model1DSpectral{T}(G,P,SpectralVars(G))
+    else; return Model1DFiniteDiff{T}(G,P,FiniteDiffVars(G))
     end
 
 end
@@ -46,8 +46,8 @@ function CreateModel(
     T = eltype(G)
 
     if spectral
-          return Model2DSpectral{T}(G,P,SpectralVars())
-    else; return Model2DFiniteDiff{T}(G,P,FiniteDiffVars())
+          return Model2DSpectral{T}(G,P,SpectralVars(G))
+    else; return Model2DFiniteDiff{T}(G,P,FiniteDiffVars(G))
     end
 
 end

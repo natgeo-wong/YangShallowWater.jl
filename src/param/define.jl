@@ -6,7 +6,7 @@ struct SimpleParams{FT<:Real} <: YSWParams
     nν :: Int # Order of the hyperviscous operato
 end
 
-struct ForcingParams1D{FT<:Real} <: YSWParams
+struct ForcingParams1D{FT<:Real} <: ForcingParams
      c :: FT  # Gravity Wave speed
      f :: FT  # Coriolis parameter
     τd :: FT  # Linear Damping Timescale
@@ -16,7 +16,7 @@ struct ForcingParams1D{FT<:Real} <: YSWParams
     ϕforcing   :: Forcing1D
 end
 
-struct ForcingParams2D{FT<:Real} <: YSWParams
+struct ForcingParams2D{FT<:Real} <: ForcingParams
      c :: FT  # Gravity Wave speed
      f :: FT  # Coriolis parameter
     τd :: FT  # Linear Damping Timescale
@@ -44,17 +44,17 @@ function DefineParams(
    wtg        :: Bool = false,
    ϕforcing   :: Bool = false,
    convectionfunction! :: Function = calcYangConvection!,
-   ϕfunction!          :: Function = calcYangLargeScale!,
+   ϕfunction!          :: Function = calcYangLargeScale,
 )
 
    if convection || ϕforcing
        P = DefineParams(
-           G,c,f,τd,ν,nν,
-           τc,ϕc,rc,Sc,
-           τl,ϕ0,wtg,Fl,
+           G,c,f,τd*3600,ν,nν,
+           τc*86400,ϕc,rc*1000,Sc,
+           τl*86400,ϕ0,wtg,Fl,
            convectionfunction!,ϕfunction!
        )
-   else; P = SimpleParams{FT}(c,f,τd,ν,nν)
+   else; P = SimpleParams{eltype(G)}(c,f,τd,ν,nν)
    end
 
 end

@@ -12,8 +12,7 @@ import Base: eltype, show, run
 @reexport using FourierFlows
 
 export
-        YSWParams,
-        GenerateGrid, DefineParams,
+        GenerateGrid, DefineParams, CreateModel,
         run
 
 ## Abstract SuperTypes
@@ -30,6 +29,7 @@ abstract type AbstractModel end
 Abstract supertype for different parameter inputs (i.e., forcing, convection, etc.)
 """
 abstract type YSWParams <: AbstractParams end
+abstract type ForcingParams <: YSWParams end
 
 """
     AbstractForcing
@@ -63,6 +63,6 @@ include("calculate/potential.jl")
 
 include("equations/spectral2D.jl")
 
-# include("run.jl")
+include("run.jl")
 
 end
