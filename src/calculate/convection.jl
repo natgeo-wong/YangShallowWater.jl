@@ -65,7 +65,7 @@ function updateYangConvectionFlux!(c, ϕf, convection::Convection2D, clock, G::T
             for iiy = 1 : CG.ny, iix = 1 : CG.nx
                 ic_x = Int(mod(ix+CG.cx[iix],G.nx)); if iszero(ic_x); ic_x = G.nx end
                 ic_y = Int(mod(iy+CG.cy[iiy],G.ny)); if iszero(ic_y); ic_y = G.ny end
-                c[ic_x,ic_y] += CG.Fc[iix,iiy] * τ * clock.dt
+                c[ic_x,ic_y] += CG.Fc[iix,iiy] * τ
             end
 
         end
@@ -95,7 +95,7 @@ function updateYangConvectionFlux!(c, ϕf, convection::Convection1D, clock, G::O
 
             for iix = 1 : CG.nx
                 ic_x = Int(mod(ix+CG.cx[iix],G.nx)); if iszero(ic_x); ic_x = G.nx end
-                c[ic_x] += CG.Fc[iix] * τ * clock.dt
+                c[ic_x] += CG.Fc[iix] * τ
             end
 
         end

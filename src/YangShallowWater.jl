@@ -66,6 +66,7 @@ include("calculate/potential.jl")
 
 include("equations/spectral2D.jl")
 
+include("save.jl")
 include("run.jl")
 
 end
