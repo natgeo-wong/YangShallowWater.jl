@@ -40,7 +40,7 @@ function DefineParams(
    τl :: Real = 1,       # units in days
    ϕ0 :: Real = 0,       # units in m² s²
    Fl :: Real = 0,
-   convection :: Bool = true,
+   convection :: Bool = false,
    wtg        :: Bool = false,
    ϕforcing   :: Bool = false,
    convectionfunction! :: Function = calcYangConvection!,
