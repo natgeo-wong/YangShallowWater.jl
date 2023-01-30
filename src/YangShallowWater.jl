@@ -46,6 +46,8 @@ Abstract supertype for different parameter inputs (i.e., forcing, convection, et
 abstract type Forcing1D <: AbstractForcing end
 abstract type Forcing2D <: AbstractForcing end
 
+modulelog() = "$(now()) - YangShallowWater.jl"
+
 ## Including other files in the module
 
 include("grid.jl")
