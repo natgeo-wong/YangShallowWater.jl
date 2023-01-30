@@ -1,24 +1,24 @@
-struct Convection1DGrid{FT<:Real} <: AbstractGrid
+struct Convection1DGrid{FT<:Real}
     nx :: Int
     cx :: Vector{Int}
     Fc :: Vector{FT}
 end
 
-struct Convection1DFlux{FT<:Real} <: AbstractGrid
+struct Convection1DFlux{FT<:Real}
      old :: Vector{Int}
      new :: Vector{Int}
       Δt :: Vector{FT}
 end
 
-struct Convection2DGrid{FT<:Real} <: AbstractGrid
+struct Convection2DGrid{FT<:Real}
     nx :: Int
     ny :: Int
-    cx :: Vector{Int,2}
-    cy :: Vector{Int,2}
+    cx :: Vector{Int}
+    cy :: Vector{Int}
     Fc :: Array{FT,2}
 end
 
-struct Convection2DFlux{FT<:Real} <: AbstractGrid
+struct Convection2DFlux{FT<:Real}
      old :: Array{Int,2}
      new :: Array{Int,2}
       Δt :: Array{FT,2}
@@ -69,7 +69,7 @@ function GenerateConvection(
         τc, ϕc, rc, Sc,
         Convection1DGrid{T}(
             2*nx_c+1,
-            collect(-nx_c:nx_c)
+            collect(-nx_c:nx_c),
             cflux
         ),
         Convection1DFlux{T}(

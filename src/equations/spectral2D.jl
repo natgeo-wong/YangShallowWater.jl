@@ -75,7 +75,7 @@ function updatevars!(prob, ::TwoDGrid, ::SpectralVars)
 
 end
 
-function set_uvϕ!(prob, u0, v0, ϕ0, ::TwoDGrid, ::SpectralVars)
+function set_uvϕ!(prob, u0, v0, ϕ0, G::TwoDGrid, V::SpectralVars)
 
     vars, grid, sol = prob.vars, prob.grid, prob.sol
 
@@ -89,7 +89,7 @@ function set_uvϕ!(prob, u0, v0, ϕ0, ::TwoDGrid, ::SpectralVars)
     @views sol[:, :, 2] .= vars.vh
     @views sol[:, :, 3] .= vars.ϕh
 
-    updatevars!(prob, ::TwoDGrid, ::SpectralVars)
+    updatevars!(prob, G, V)
 
   return nothing
 

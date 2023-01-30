@@ -54,8 +54,9 @@ include("param/convection.jl")
 include("param/potentialforcing.jl")
 include("param/define.jl")
 
-include("model.jl")
 include("vars.jl")
+
+include("model.jl")
 
 include("calculate/convection.jl")
 include("calculate/potential.jl")

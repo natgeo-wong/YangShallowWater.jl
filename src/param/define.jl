@@ -83,7 +83,7 @@ DefineParams(
 )
 
 DefineParams(
-     G :: OneDGrid,
+     G :: TwoDGrid,
      c :: Real,
      f :: Real,
     τd :: Real,
