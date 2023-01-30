@@ -29,7 +29,6 @@ struct Convection1D{FT<:Real} <: Forcing1D
     ϕc :: FT # Convection-triggering geopotential
     rc :: FT # Convection radius
     Sc :: FT # Number DENSITY of convective events
-    Fc :: Vector{FT}
     ConvectionGrid :: Convection1DGrid{FT}
     ConvectionFlux :: Convection1DFlux{FT}
     Equation :: Function
@@ -40,7 +39,6 @@ struct Convection2D{FT<:Real} <: Forcing2D
     ϕc :: FT # Convection-triggering geopotential
     rc :: FT # Convection radius
     Sc :: FT # Number DENSITY of convective events
-    Fc :: Array{FT,2}
     ConvectionGrid :: Convection2DGrid{FT}
     ConvectionFlux :: Convection2DFlux{FT}
     Equation :: Function
@@ -58,11 +56,16 @@ function GenerateConvection(
     T = eltype(G)
 
     r2 = rc^2
-    dx = G.Lx / G.nx; nx_c = floor(rc/dx); xc = nx_c+1
+    dx = G.Lx / G.nx; nx_c = Int(floor(rc/dx)); xc = nx_c+1
 
-    cflux = ones(T, 2*nx_c+1) ./ P.τc / P.rc
+    cflux = - ones(T, 2*nx_c+1) ./ τc ./ rc
     for ix = -nx_c : nx_c
-        cflux[xc+ix] *= (1 - (dx*ix)^2/r2)
+        ix2 = (dx*ix)^2
+        if ir2 < r2
+            cflux[xc+ix] *= 1 - (ix2/r2)
+        else
+            cflux[xc+ix] *= 0
+        end
     end
 
     return Convection1D{T}(
@@ -94,13 +97,17 @@ function GenerateConvection(
     T = eltype(G)
 
     r2 = rc^2
-    dx = G.Lx / G.nx; nx_c = floor(rc/dx); xc = nx_c+1
-    dy = G.Ly / G.ny; ny_c = floor(rc/dy); yc = ny_c+1
+    dx = G.Lx / G.nx; nx_c = Int(floor(rc/dx)); xc = nx_c+1
+    dy = G.Ly / G.ny; ny_c = Int(floor(rc/dy)); yc = ny_c+1
 
-    cflux = ones(T, 2*nx_c+1, 2*ny_c+1) ./ P.τc / pi*rc2
+    cflux = -ones(T, 2*nx_c+1, 2*ny_c+1) ./ τc ./ (pi*r2)
     for iy = -ny_c : ny_c, ix = -nx_c : nx_c
-        ir = sqrt((dx*ix)^2+(dy*iy)^2)
-        cflux[xc+ix,yc+iy] *= (1 - ir/r2)
+        ir2 = (dx*ix)^2+(dy*iy)^2
+        if ir2 < r2
+            cflux[xc+ix,yc+iy] *= 1 - ir2/r2
+        else
+            cflux[xc+ix,yc+iy] *= 0
+        end
     end
 
     return Convection2D{T}(
