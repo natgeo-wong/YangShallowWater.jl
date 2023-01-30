@@ -6,6 +6,7 @@ using LinearAlgebra: mul!, ldiv!
 using NCDatasets
 using Reexport
 using Printf
+using ProgressMeter
 
 import Base: eltype, show, run
 
