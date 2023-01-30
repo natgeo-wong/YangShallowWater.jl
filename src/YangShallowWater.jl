@@ -16,10 +16,52 @@ export
         GenerateGrid, DefineParams,
         run
 
+## Abstract SuperTypes
+"""
+    AbstractModel
+
+Abstract supertype for different models that YangShallowWater can run.
+"""
+abstract type AbstractModel end
+
+"""
+    YSWParams
+
+Abstract supertype for different parameter inputs (i.e., forcing, convection, etc.)
+"""
+abstract type YSWParams <: AbstractParams end
+
+"""
+    AbstractForcing
+
+Abstract supertype for different parameter inputs (i.e., forcing, convection, etc.)
+"""
+abstract type AbstractForcing end
+
+"""
+    YSWParams
+
+Abstract supertype for different parameter inputs (i.e., forcing, convection, etc.)
+"""
+abstract type Forcing1D <: AbstractForcing end
+abstract type Forcing2D <: AbstractForcing end
+
 ## Including other files in the module
 
-include("setup.jl")
+include("grid.jl")
+
+include("param/define.jl")
+include("param/convection.jl")
+include("param/potentialforcing.jl")
+
 include("model.jl")
-include("run.jl")
+include("vars.jl")
+
+include("calculate/convection.jl")
+include("calculate/potential.jl")
+
+include("equations/spectral2D.jl")
+
+# include("run.jl")
 
 end
