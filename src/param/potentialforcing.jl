@@ -22,15 +22,12 @@ function GenerateϕForcing(
     ϕl  :: Real,
     wtg :: Bool,
     ϕfunction :: Function,
-    :: OneDGrid,
+    G :: OneDGrid,
 )
 
     T = eltype(G)
 
-    ϕflux = ones(T, 2*nx_c+1) ./ P.τc / P.rc
-    for ix = -nx_c : nx_c
-        ϕflux[xc+ix] *= (1 - (dx*ix)^2/r2)
-    end
+    ϕflux = ones(T, G.nx)
 
     return ϕForcing1D{T}(τl, ϕ0, ϕl, wtg, ϕflux, ϕfunction)
 
@@ -42,23 +39,13 @@ function GenerateϕForcing(
     ϕl  :: Real,
     wtg :: Bool,
     ϕfunction :: Function,
-    :: TwoDGrid,
+    G :: TwoDGrid,
 )
 
     T = eltype(G)
 
-    ϕflux = ones(T, 2*nx_c+1, 2*ny_c+1) ./ P.τc / pi*rc2
-    for iy = -ny_c : ny_c, ix = -nx_c : nx_c
-        ir = sqrt((dx*ix)^2+(dy*iy)^2)
-        ϕflux[xc+ix,yc+iy] *= (1 - ir/r2)
-    end
+    ϕflux = ones(T, G.nx, G.ny)
 
     return ϕForcing2D{T}(τl, ϕ0, ϕl, wtg, ϕflux, ϕfunction)
-
-end
-
-function calculateConvection()
-
-
 
 end
