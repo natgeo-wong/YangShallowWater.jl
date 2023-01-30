@@ -37,8 +37,8 @@ function addforcing!(N, sol, t, clock, vars :: SpectralVars, params, grid :: Two
     ldiv!(vars.ϕ, grid.rfftplan, deepcopy(sol[:, :, 3]))
 
     ϕf = params.ϕforcing.Equation(vars.ϕ, params.ϕforcing, clock)
-    ϕfh = grid.rfftplan*(ones(grid.nx,grid.ny)*ϕf)
-    
+    @. vars.ϕf = ϕf
+    mul!(vars.ϕfh, grid.rfftplan, vars.ϕf)
     # call calcF! to compute ch and store it in vars.ch
     params.convection.Equation(
         vars.ch, vars.c, vars.ϕ, ϕf,
@@ -46,7 +46,7 @@ function addforcing!(N, sol, t, clock, vars :: SpectralVars, params, grid :: Two
     )
     
     # add ch on the nonlinear term for ϕ
-    @views @. N[:, :, 3] += vars.ch + ϕfh
+    @views @. N[:, :, 3] += vars.ch + vars.ϕfh
   
     return nothing
 end
