@@ -1,5 +1,5 @@
 function GenerateGrid(
-	FT = Float64,
+	FT = Float64;
 	nx :: Int,
     ny :: Int,
     Lx :: Real,

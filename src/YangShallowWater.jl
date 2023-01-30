@@ -50,9 +50,9 @@ abstract type Forcing2D <: AbstractForcing end
 
 include("grid.jl")
 
-include("param/define.jl")
 include("param/convection.jl")
 include("param/potentialforcing.jl")
+include("param/define.jl")
 
 include("model.jl")
 include("vars.jl")

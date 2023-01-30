@@ -1,25 +1,3 @@
-struct Convection1D{FT<:Real} <: Forcing1D
-    τc :: FT # Convective Damping Timescale
-    ϕc :: FT # Convection-triggering geopotential
-    rc :: FT # Convection radius
-    Sc :: FT # Number DENSITY of convective events
-    Fc :: Vector{FT}
-    ConvectionGrid :: Convection1DGrid{FT}
-    ConvectionFlux :: Convection1DFlux{FT}
-    Equation :: Function
-end
-
-struct Convection2D{FT<:Real} <: Forcing2D
-    τc :: FT # Convective Damping Timescale
-    ϕc :: FT # Convection-triggering geopotential
-    rc :: FT # Convection radius
-    Sc :: FT # Number DENSITY of convective events
-    Fc :: Array{FT,2}
-    ConvectionGrid :: Convection2DGrid{FT}
-    ConvectionFlux :: Convection2DFlux{FT}
-    Equation :: Function
-end
-
 struct Convection1DGrid{FT<:Real} <: AbstractGrid
     nx :: Int
     cx :: Vector{Int}
@@ -44,6 +22,28 @@ struct Convection2DFlux{FT<:Real} <: AbstractGrid
      old :: Array{Int,2}
      new :: Array{Int,2}
       Δt :: Array{FT,2}
+end
+
+struct Convection1D{FT<:Real} <: Forcing1D
+    τc :: FT # Convective Damping Timescale
+    ϕc :: FT # Convection-triggering geopotential
+    rc :: FT # Convection radius
+    Sc :: FT # Number DENSITY of convective events
+    Fc :: Vector{FT}
+    ConvectionGrid :: Convection1DGrid{FT}
+    ConvectionFlux :: Convection1DFlux{FT}
+    Equation :: Function
+end
+
+struct Convection2D{FT<:Real} <: Forcing2D
+    τc :: FT # Convective Damping Timescale
+    ϕc :: FT # Convection-triggering geopotential
+    rc :: FT # Convection radius
+    Sc :: FT # Number DENSITY of convective events
+    Fc :: Array{FT,2}
+    ConvectionGrid :: Convection2DGrid{FT}
+    ConvectionFlux :: Convection2DFlux{FT}
+    Equation :: Function
 end
 
 function GenerateConvection(
