@@ -1,9 +1,9 @@
 function GenerateGrid(
 	FT = Float64;
 	nx :: Int,
-    ny :: Int,
+    ny :: Int = 1,
     Lx :: Real,
-    Ly :: Real
+    Ly :: Real = 0.
 )
 
     if isone(ny) || iszero(Ly)
