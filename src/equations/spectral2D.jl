@@ -1,5 +1,5 @@
-function calcN!(N, sol, t, clock, vars :: SpectralVars, params :: SimpleParams , grid :: TwoDGrid)
-    
+function calcN_swe!(N, sol, t, clock, vars :: SpectralVars, params, grid :: TwoDGrid)
+
     dealias!(sol, grid)
 
     vars.uh  .= view(sol, :, :, 1)
@@ -14,17 +14,9 @@ function calcN!(N, sol, t, clock, vars :: SpectralVars, params :: SimpleParams ,
 
 end
 
-function calcN!(N, sol, t, clock, vars :: SpectralVars, params :: ForcingParams, grid :: TwoDGrid)
-    
-    dealias!(sol, grid)
+function calcN!(N, sol, t, clock, vars :: SpectralVars, params, grid :: TwoDGrid)
 
-    vars.uh  .= view(sol, :, :, 1)
-    vars.vh  .= view(sol, :, :, 2)
-    vars.ϕh  .= view(sol, :, :, 3)
-
-    @views @. N[:, :, 1] = - im * grid.kr * vars.ϕh                                    # - ∂ϕ/∂x
-    @views @. N[:, :, 2] = - im * grid.l  * vars.ϕh                                    # - ∂ϕ/∂y
-    @views @. N[:, :, 3] = - im * (grid.kr * vars.uh + grid.l * vars.vh) * params.c^2  # - c^2 * (∂u/∂x + ∂v/∂y)
+    calcN_swe!(N, sol, t, clock, vars, params, grid)
 
     addforcing!(N, sol, t, clock, vars, params, grid)
 
@@ -32,10 +24,13 @@ function calcN!(N, sol, t, clock, vars :: SpectralVars, params :: ForcingParams,
 
 end
 
-function addforcing!(N, sol, t, clock, vars :: SpectralVars, params, grid :: TwoDGrid)
+addforcing!(N, sol, t, clock, vars, ::SimpleParams, grid) = nothing
+
+function addforcing!(N, sol, t, clock, vars :: SpectralVars, params :: ForcingParams, grid :: TwoDGrid)
 
     ldiv!(vars.ϕ, grid.rfftplan, deepcopy(sol[:, :, 3]))
 
+    # this next line is allocating φf !!!
     ϕf = params.ϕforcing.Equation(vars.ϕ, params.ϕforcing, clock)
     @. vars.ϕf = ϕf
     mul!(vars.ϕfh, grid.rfftplan, vars.ϕf)
