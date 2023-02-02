@@ -33,7 +33,6 @@ end
 function FiniteDiffVars(G::OneDGrid)
 
     T = eltype(G)
-
     Dev = typeof(G.device)
 
     @devzeros Dev T G.nx u v ϕ c
@@ -57,7 +56,6 @@ end
 function FiniteDiffVars(G::TwoDGrid)
 
     T = eltype(G)
-
     Dev = typeof(G.device)
 
     @devzeros Dev T (G.nx, G.ny) u v ϕ c
