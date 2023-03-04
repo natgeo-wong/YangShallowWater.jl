@@ -1,5 +1,10 @@
-function calcN!(N, sol, t, clock, vars :: SpectralVars, params :: SimpleParams , grid :: TwoDGrid)
-    
+"""
+    calcN_swe!(N, sol, t, clock, vars :: SpectralVars, params, grid :: TwoDGrid)
+
+Calculate the linear shallow-water dynamics tendencies and stores them in `N`.
+"""
+function calcN_swe!(N, sol, t, clock, vars :: SpectralVars, params, grid :: TwoDGrid)
+
     dealias!(sol, grid)
 
     vars.uh  .= view(sol, :, :, 1)
@@ -14,17 +19,15 @@ function calcN!(N, sol, t, clock, vars :: SpectralVars, params :: SimpleParams ,
 
 end
 
-function calcN!(N, sol, t, clock, vars :: SpectralVars, params :: ForcingParams, grid :: TwoDGrid)
-    
-    dealias!(sol, grid)
+"""
+    calcN!(N, sol, t, clock, vars :: SpectralVars, params, grid :: TwoDGrid)
 
-    vars.uh  .= view(sol, :, :, 1)
-    vars.vh  .= view(sol, :, :, 2)
-    vars.ϕh  .= view(sol, :, :, 3)
+Calculate the tendency and stores them in `N`. The tendencies are computed via
+[`calcN_swe!`](@ref) and [`addforcing!`](@ref).
+"""
+function calcN!(N, sol, t, clock, vars :: SpectralVars, params, grid :: TwoDGrid)
 
-    @views @. N[:, :, 1] = - im * grid.kr * vars.ϕh                                    # - ∂ϕ/∂x
-    @views @. N[:, :, 2] = - im * grid.l  * vars.ϕh                                    # - ∂ϕ/∂y
-    @views @. N[:, :, 3] = - im * (grid.kr * vars.uh + grid.l * vars.vh) * params.c^2  # - c^2 * (∂u/∂x + ∂v/∂y)
+    calcN_swe!(N, sol, t, clock, vars, params, grid)
 
     addforcing!(N, sol, t, clock, vars, params, grid)
 
@@ -32,13 +35,22 @@ function calcN!(N, sol, t, clock, vars :: SpectralVars, params :: ForcingParams,
 
 end
 
-function addforcing!(N, sol, t, clock, vars :: SpectralVars, params, grid :: TwoDGrid)
+"""
+    addforcing!(N, sol, t, clock, vars, params, grid)
+
+Add forcing (if applicable) to the `ϕ` tendency, i.e., the 3rd component of `N`.
+"""
+addforcing!(N, sol, t, clock, vars, ::SimpleParams, grid) = nothing
+
+function addforcing!(N, sol, t, clock, vars :: SpectralVars, params :: ForcingParams, grid :: TwoDGrid)
 
     ldiv!(vars.ϕ, grid.rfftplan, deepcopy(sol[:, :, 3]))
 
+    # this next line is allocating φf !!!
     ϕf = params.ϕforcing.Equation(vars.ϕ, params.ϕforcing, clock)
     @. vars.ϕf = ϕf
     mul!(vars.ϕfh, grid.rfftplan, vars.ϕf)
+
     # call calcF! to compute ch and store it in vars.ch
     params.convection.Equation(
         vars.ch, vars.c, vars.ϕ, ϕf,
@@ -74,9 +86,9 @@ function updatevars!(prob, ::TwoDGrid, ::SpectralVars)
     
     vars, grid, sol = prob.vars, prob.grid, prob.sol
 
-    vars.uh  .= sol[:, :, 1]
-    vars.vh  .= sol[:, :, 2]
-    vars.ϕh  .= sol[:, :, 3]
+    vars.uh .= sol[:, :, 1]
+    vars.vh .= sol[:, :, 2]
+    vars.ϕh .= sol[:, :, 3]
 
     # use deepcopy() below because irfft destroys its input
     ldiv!(vars.u, grid.rfftplan, deepcopy(sol[:, :, 1]))

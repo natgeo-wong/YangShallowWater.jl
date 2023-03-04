@@ -1,4 +1,4 @@
-struct SpectralVars{FT,C} <: AbstractVars
+struct SpectralVars{FT, C} <: AbstractVars
       u :: FT
       v :: FT
       ϕ :: FT
@@ -33,13 +33,11 @@ end
 function FiniteDiffVars(G::OneDGrid)
 
     T = eltype(G)
+    Dev = typeof(G.device)
 
-    return FiniteDiffVars(
-        zeros(T,grid.nx),
-        zeros(T,grid.nx),
-        zeros(T,grid.nx),
-        zeros(T,grid.nx),
-    )
+    @devzeros Dev T G.nx u v ϕ c
+
+    return FiniteDiffVars(u, v, ϕ, c)
 
 end
 
@@ -58,12 +56,10 @@ end
 function FiniteDiffVars(G::TwoDGrid)
 
     T = eltype(G)
+    Dev = typeof(G.device)
 
-    return FiniteDiffVars(
-        zeros(T,G.nx,G.ny),
-        zeros(T,G.nx,G.ny),
-        zeros(T,G.nx,G.ny),
-        zeros(T,G.nx,G.ny),
-    )
+    @devzeros Dev T (G.nx, G.ny) u v ϕ c
+
+    return FiniteDiffVars(u, v, ϕ, c)
 
 end

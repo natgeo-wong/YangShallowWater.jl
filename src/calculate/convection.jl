@@ -54,12 +54,15 @@ function updateYangConvectionFlux!(c, ϕf, convection::Convection2D, clock, G::T
     CG = convection.ConvectionGrid
 
     τcd2 = convection.τc/2
-    q = ϕf./convection.Sc
+
+    # allocating
+    q = ϕf ./ convection.Sc
 
     for iy = 1 : G.ny, ix = 1 : G.nx
 
         if !iszero(c_Δt[ix,iy])
 
+            # allocating within a loop
             τ = (1 - (c_Δt[ix,iy]/τcd2-1)^2) * q
 
             for iiy = 1 : CG.ny, iix = 1 : CG.nx
@@ -79,18 +82,21 @@ end
 function updateYangConvectionFlux!(c, ϕf, convection::Convection1D, clock, G::OneDGrid)
 
     c .= 0
-    c_new  = convection.ConvectionFlux.new
-    c_Δt   = convection.ConvectionFlux.Δt
+    c_new = convection.ConvectionFlux.new
+    c_Δt  = convection.ConvectionFlux.Δt
 
     CG = convection.ConvectionGrid
 
     τcd2 = convection.τc/2
-    q = ϕf./convection.Sc
+
+    # allocating
+    q = ϕf ./ convection.Sc
 
     for ix = 1 : G.nx
 
         if isone(c_new[ix])
 
+            # allocating within a loop
             τ = (1 - (c_Δt[ix]/τcd2-1)^2) * q
 
             for iix = 1 : CG.nx
